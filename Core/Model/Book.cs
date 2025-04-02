@@ -4,6 +4,14 @@ public class Book{
     public string? Author{get;private set;}
     public int Quantity{get;private set;}
     public int TotalSale {get;private set;}
+    public Book(){}
+    public Book(string? title, string? author, int quantity, int total)
+    {
+        SetTitle(title);
+        SetAuthor(author);
+        SetQuantity(quantity);
+        SetTotalSale(total);
+    }
 
     public void SetTitle(string? title){
         if(string.IsNullOrEmpty(title)){

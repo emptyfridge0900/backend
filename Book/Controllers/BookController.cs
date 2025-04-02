@@ -14,32 +14,33 @@ public class BookController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IResult> QueryBooks([FromQuery]QueryBooks rst){
+    public async Task<QueryBooksResponse> QueryBooks([FromQuery]QueryBooks rst){
         var books = await _bookServ.QueryBooks(rst.PageIndex, rst.ItemPage, rst.Title, rst.Author);
-        return Results.Ok(new QueryBooksResponse(books.result,books.totalRecords,books.result.Count));
+
+        return new QueryBooksResponse(books.result,books.totalRecords,books.result.Count);
     }
     [HttpGet("{id}")]
-    public async Task<IResult> FindBook(int id){
+    public async Task<FindBookResponse> FindBook(int id){
         var book = await _bookServ.GetBook(id);
         if(book==null){
             throw new RecordNotFoundException("Record not found");
         }
-        return Results.Ok(new FindBookResponse(book.Id,book.Title!,book.Author!,book.Quantity,book.TotalSale));
+        return new FindBookResponse(book.Id,book.Title!,book.Author!,book.Quantity,book.TotalSale);
     }
     [HttpPost]
-    public async Task<IResult> AddBook([FromBody]AddBookRequest rst){
+    public async Task<AddBookResponse> AddBook([FromBody]AddBookRequest rst){
         var book = await _bookServ.AddBook(rst.Title, rst.Author);
-        return Results.Ok(new AddBookResponse(book.Id,book.Title!,book.Author!,book.Quantity,book.TotalSale));
+        return new AddBookResponse(book.Id,book.Title!,book.Author!,book.Quantity,book.TotalSale);
     }
     [HttpPut("{id}")]
-    public async Task<IResult> UpdateBook([FromRoute]int id, [FromBody] UpdateBookRequest rst){
+    public async Task<UpdateBookResponse> UpdateBook([FromRoute]int id, [FromBody] UpdateBookRequest rst){
         var changed = await _bookServ.UpdateBook(id, rst.Title, rst.Author, rst.Quantity, rst.Total);
-        return Results.Ok(new UpdateBookResponse(changed));
+        return new UpdateBookResponse(changed);
     }
     [HttpDelete("{id}")]
-    public async Task<IResult> DeleteBook(int id){
+    public async Task<DeleteBookResponse> DeleteBook(int id){
         var deletedId =await _bookServ.DeleteBook(id);
-        return Results.Ok(new DeleteBookResponse(deletedId));
+        return new DeleteBookResponse(deletedId);
     }
 }
 
