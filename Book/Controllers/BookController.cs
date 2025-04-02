@@ -14,12 +14,14 @@ public class BookController : ControllerBase
     }
 
     [HttpGet]
+    [ResponseCache(Duration = 120, Location = ResponseCacheLocation.Any, NoStore = false)]
     public async Task<QueryBooksResponse> QueryBooks([FromQuery]QueryBooks rst){
         var books = await _bookServ.QueryBooks(rst.PageIndex, rst.ItemPage, rst.Title, rst.Author);
 
         return new QueryBooksResponse(books.result,books.totalRecords,books.result.Count);
     }
     [HttpGet("{id}")]
+    [ResponseCache(Duration = 120, Location = ResponseCacheLocation.Any, NoStore = false)]
     public async Task<FindBookResponse> FindBook(int id){
         var book = await _bookServ.GetBook(id);
         if(book==null){
