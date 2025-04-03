@@ -48,16 +48,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: .net-app
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_CD22FD0395784F639518925E1EFC70E2 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_66FF58BA62F64705AC9886468C33CB78 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_09510F2585DB4F73936186765AAE5652 }}
-      - name: Deploy to Azure Web App
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: 'test123'
-          slot-name: 'Production'
-          package: .       
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
