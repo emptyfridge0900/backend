@@ -68,14 +68,18 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      # Checkout repository to get fly.toml
-      - uses: actions/checkout@v4
-      
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
           name: fly-app
           path: ./myapp
+
+      # Checkout only fly.toml
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            fly.toml
+          sparse-checkout-cone-mode: false
 
       - name: Prepare for Fly.io Deploy
         run: |
