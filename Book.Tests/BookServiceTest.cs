@@ -1,5 +1,4 @@
-﻿using backend.Controllers;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Moq;
 
 
@@ -34,7 +33,7 @@ public class BookDbTest
 
         // Assert
         repositoryMock.Verify(r => r.QueryBooks(0,10,"title1","author1"));
-        Assert.Equal(1, book.totalRecord);
+        Assert.Equal(1, book.totalRecords);
     }
 
     [Fact]
@@ -58,7 +57,7 @@ public class BookDbTest
         Assert.Equal("author1", book.author);
         Assert.Equal("title1", book.title);
         Assert.Equal(0, book.quantity);
-        Assert.Equal(1, book.totalSale);
+        Assert.Equal(1, book.totalSales);
     }
 
     [Fact]
@@ -89,7 +88,7 @@ public class BookDbTest
         var controller = new BookController(null,repositoryMock.Object);
 
         // Act
-        var response = await controller.UpdateBook(1,new UpdateBookRequest{Title="title2",Author="author2",Quantity=1,Total=1});
+        var response = await controller.UpdateBook(1,new UpdateBookRequest{Title="title2",Author="author2",Quantity=1,TotalSales=1});
 
         // Assert
         repositoryMock.Verify(r => r.UpdateBook(1,"title2","author2",1,1),Times.Once());
