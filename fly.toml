@@ -7,15 +7,10 @@ app = "book-damp-voice-8215"
 primary_region = "yul"
 
 [build]
-  builder = "paketobuildpacks/builder:base"
-  buildpacks = ["gcr.io/paketo-buildpacks/dotnet-core"]
-
-[env]
-  ASPNETCORE_ENVIRONMENT = "Production"
-  PORT = "8080"
+  dockerfile = "book.client/Dockerfile.prod"
 
 [http_service]
-  internal_port = 8080
+  internal_port = 80
   force_https = true
   auto_stop_machines = "stop"
   auto_start_machines = true
