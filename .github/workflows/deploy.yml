@@ -1,4 +1,4 @@
-name: Deploy React App to Fly.io
+name: Deploy Full App to Fly.io
 
 on:
   push:
@@ -9,8 +9,21 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      # Checkout the repository
       - uses: actions/checkout@v4
+
+      # Set up .NET
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.x'
+
+      # Build .NET backend
+      - name: Build Book.Server
+        working-directory: ./Book.Server
+        run: |
+          dotnet restore
+          dotnet build --configuration Release
+          ls -lR
 
       # Set up Node.js
       - name: Set up Node.js
@@ -18,13 +31,20 @@ jobs:
         with:
           node-version: '20.x'
 
-      # Install dependencies and build React app
+      # Build React frontend
       - name: Build React Frontend
         working-directory: ./book.client
         run: |
           npm ci
           npm run build
           ls -lR ./dist  # Debug: Verify (use ./build if needed)
+
+      # Combine frontend and backend
+      - name: Prepare Deployment
+        run: |
+          mkdir -p Book.Server/wwwroot
+          cp -r book.client/dist/* Book.Server/wwwroot/  # Adjust to build/ if needed
+          ls -lR Book.Server/wwwroot  # Debug: Verify files
 
       # Deploy to Fly.io
       - uses: superfly/flyctl-actions/setup-flyctl@master
