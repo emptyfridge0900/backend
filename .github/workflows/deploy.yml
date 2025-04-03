@@ -23,10 +23,15 @@ jobs:
       # Build and publish .NET app
       - name: Build with dotnet
         working-directory: ./Book.Server
-        run: dotnet build --configuration Release
+        run: |
+          dotnet build --configuration Release
+          echo "Build completed"
       - name: Publish .NET app
         working-directory: ./Book.Server
-        run: dotnet publish -c Release -o ../../myapp
+        run: |
+          mkdir -p ../../myapp  # Ensure myapp exists at root
+          dotnet publish -c Release -o ../../myapp
+          ls -lR ../../myapp    # Debug: Verify .NET output
 
       # Set up Node.js
       - name: Use Node.js
@@ -40,11 +45,12 @@ jobs:
         run: |
           npm install
           npm run build -- --outDir ../../myapp/wwwroot
+          ls -lR ../../myapp/wwwroot  # Debug: Verify React output
 
       # Debug: Verify myapp contents
       - name: Check myapp contents
         run: |
-          ls -lR ./myapp  # List files recursively
+          ls -lR ./myapp
           if [ ! -d "./myapp" ]; then echo "Error: myapp directory not found"; exit 1; fi
 
       # Upload artifact
@@ -64,13 +70,11 @@ jobs:
           name: fly-app
           path: ./myapp
 
-      # Move files to root for Fly.io
       - name: Prepare for Fly.io Deploy
         run: |
           mv myapp/* .
           ls -l
 
-      # Deploy to Fly.io
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Deploy to Fly.io
         run: flyctl deploy --remote-only
