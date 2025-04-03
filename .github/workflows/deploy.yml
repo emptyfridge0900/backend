@@ -28,7 +28,7 @@ jobs:
       
       # Build React Frontend
       - name: Build React Frontend
-        working-directory: ./ClientApp
+        working-directory: ./book.client
         run: |
           npm install
           npm run build --outDir ${{env.DOTNET_ROOT}}/myapp/wwwroot
