@@ -3,7 +3,7 @@ public class Book{
     public string? Title{get;private set;}
     public string? Author{get;private set;}
     public int Quantity{get;private set;}
-    public int TotalSale {get;private set;}
+    public int TotalSales {get;private set;}
     public Book(){}
     public Book(string? title, string? author, int quantity, int total)
     {
@@ -35,6 +35,6 @@ public class Book{
         if(number<0){
             throw new UpdateRecordException("Sales number cannot less tha 0");
         }
-        TotalSale =number;
+        TotalSales =number;
     }
 }

@@ -1,0 +1,6 @@
+@Book.Server_HostAddress = http://localhost:5282
+
+GET {{Book.Server_HostAddress}}/api/books
+Accept: application/json
+
+###
