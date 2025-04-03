@@ -26,7 +26,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
-      - run: npm ci
       - run: npm run build -outDir ${{env.DOTNET_ROOT}}/myapp/wwwroot --if-present
       - run: npm test
 
