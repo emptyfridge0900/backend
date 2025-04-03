@@ -18,7 +18,10 @@ namespace BookStore.Server
                 option.UseInMemoryDatabase("my_inmemory_db");
             });
             builder.Services.AddScoped<IBookService, BookService>();
-
+            builder.Services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "wwwroot"; // Matches myapp/wwwroot
+            });
             var app = builder.Build();
 
             app.UseDefaultFiles();
@@ -39,8 +42,13 @@ namespace BookStore.Server
             app.MapControllers();
 
             app.MapFallbackToFile("/index.html");
-
-            app.Run();
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "book.client";
+            });
+            //app.Run();
+            var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+            app.Run($"http://0.0.0.0:{port}");
         }
     }
 }

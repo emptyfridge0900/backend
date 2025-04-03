@@ -1,26 +1,35 @@
-name: Build and deploy ASP.Net Core app to Azure Web App
+name: Build and Deploy to Fly.io
+
 on:
   push:
     branches:
       - main
   workflow_dispatch:
+
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: read 
     steps:
+      # Checkout the repository
       - uses: actions/checkout@v4
+
+      # Set up .NET Core
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.x'
-      - name: Build with dotnet
-        run: dotnet build --configuration Release
-      - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
-       # Set up Node.js
+      # Build and publish .NET app
+      - name: Build with dotnet
+        working-directory: ./Book.Server  # Adjust if .csproj is elsewhere
+        run: dotnet build --configuration Release
+      - name: Publish .NET app
+        working-directory: ./Book.Server
+        run: dotnet publish -c Release -o ../../myapp  # Output to repo root/myapp
+
+      # Set up Node.js
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
@@ -28,27 +37,14 @@ jobs:
       
       # Build React Frontend
       - name: Build React Frontend
-        working-directory: ../book.client
+        working-directory: ./book.client
         run: |
           npm install
-          npm run build --outDir ${{env.DOTNET_ROOT}}/myapp/wwwroot
+          npm run build -- --outDir ../../myapp/wwwroot  # Output to myapp/wwwroot
 
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
-        with:
-          name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    environment:
-      name: 'Production'
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: .net-app
+      # Deploy to Fly.io
       - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: flyctl deploy --remote-only
+      - name: Deploy to Fly.io
+        run: flyctl deploy --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
