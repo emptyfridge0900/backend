@@ -26,3 +26,4 @@ primary_region = "yul"
   memory = "1gb"
   cpu_kind = "shared"
   cpus = 1
+  

@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     permissions:
       contents: read 
@@ -23,11 +23,11 @@ jobs:
 
       # Build and publish .NET app
       - name: Build with dotnet
-        working-directory: ./Book.Server  # Adjust if .csproj is elsewhere
+        working-directory: ./Book.Server
         run: dotnet build --configuration Release
       - name: Publish .NET app
         working-directory: ./Book.Server
-        run: dotnet publish -c Release -o ../../myapp  # Output to repo root/myapp
+        run: dotnet publish -c Release -o ../../myapp
 
       # Set up Node.js
       - name: Use Node.js
@@ -40,7 +40,31 @@ jobs:
         working-directory: ./book.client
         run: |
           npm install
-          npm run build -- --outDir ../../myapp/wwwroot  # Output to myapp/wwwroot
+          npm run build -- --outDir ../../myapp/wwwroot
+
+      # Upload artifact
+      - name: Upload artifact for deployment
+        uses: actions/upload-artifact@v4
+        with:
+          name: fly-app
+          path: ./myapp
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build  # Wait for build job to complete
+    steps:
+      # Download artifact
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: fly-app
+          path: ./myapp  # Extract to ./myapp
+
+      # Move files to root for Fly.io
+      - name: Prepare for Fly.io Deploy
+        run: |
+          mv myapp/* .  # Move .NET and React files to root
+          ls -l         # Debug: Verify files
 
       # Deploy to Fly.io
       - uses: superfly/flyctl-actions/setup-flyctl@master
