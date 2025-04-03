@@ -18,9 +18,11 @@ namespace BookStore.Server
                 option.UseInMemoryDatabase("my_inmemory_db");
             });
             builder.Services.AddScoped<IBookService, BookService>();
+
             var app = builder.Build();
 
             app.UseDefaultFiles();
+            app.UseStaticFiles();
             app.MapStaticAssets();
 
             // Configure the HTTP request pipeline.

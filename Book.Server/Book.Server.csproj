@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <SpaRoot>..\book.client</SpaRoot>
-    <SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand>
+    <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
     <SpaProxyServerUrl>https://localhost:49856</SpaProxyServerUrl>
   </PropertyGroup>
 
