@@ -2,34 +2,24 @@ app = "book-damp-voice-8215"
 primary_region = "yul"
 
 [build]
-  dockerfile = "Book.Server/Dockerfile"  # Default build for backend
+  builder = "paketobuildpacks/builder:base"
+  buildpacks = ["gcr.io/paketo-buildpacks/dotnet-core"]
 
 [env]
-  ASPNETCORE_URLS = "http://+:8080"  # Backend port
-  PORT = "8080"  # Default process port
+  ASPNETCORE_URLS = "http://+:8080"
+  PORT = "8080"  # Fly.io default
 
 [http_service]
-  internal_port = 8080  # Backend API
+  internal_port = 8080
   force_https = true
   auto_stop_machines = "stop"
   auto_start_machines = true
   min_machines_running = 0
   processes = ["app"]
 
-[[services]]
-  internal_port = 8080  # Backend API routing
-  protocol = "tcp"
-  [[services.ports]]
-    port = 80  # Map 8080 to 80 externally
-    handlers = ["http"]
-  [[services.ports]]
-    port = 443  # HTTPS
-    handlers = ["tls", "http"]
-
 [[statics]]
-  guest_path = "/app/wwwroot"  # Frontend static files from Book.Server
+  guest_path = "/app/wwwroot"  # Where .NET serves static files
   url_prefix = "/"  # Serve frontend at root
-
 [[vm]]
   memory = "1gb"
   cpu_kind = "shared"

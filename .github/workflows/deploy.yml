@@ -23,7 +23,6 @@ jobs:
         run: |
           dotnet restore
           dotnet build --configuration Release
-          ls -lR
 
       # Set up Node.js
       - name: Set up Node.js
@@ -37,14 +36,14 @@ jobs:
         run: |
           npm ci
           npm run build
-          ls -lR ./dist  # Debug: Verify (use ./build if needed)
+          ls -lR ./dist  # Adjust to ./build if needed
 
-      # Combine frontend and backend
+      # Copy frontend to backend wwwroot
       - name: Prepare Deployment
         run: |
           mkdir -p Book.Server/wwwroot
-          cp -r book.client/dist/* Book.Server/wwwroot/  # Adjust to build/ if needed
-          ls -lR Book.Server/wwwroot  # Debug: Verify files
+          cp -r book.client/dist/* Book.Server/wwwroot/
+          ls -lR Book.Server/wwwroot
 
       # Deploy to Fly.io
       - uses: superfly/flyctl-actions/setup-flyctl@master
