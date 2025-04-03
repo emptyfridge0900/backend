@@ -20,6 +20,10 @@ jobs:
         with:
           dotnet-version: '9.x'
 
+      # Define output directory
+      - name: Set output directory
+        run: echo "OUTPUT_DIR=$GITHUB_WORKSPACE/myapp" >> $GITHUB_ENV
+
       # Build and publish .NET app
       - name: Build with dotnet
         working-directory: ./Book.Server
@@ -29,9 +33,9 @@ jobs:
       - name: Publish .NET app
         working-directory: ./Book.Server
         run: |
-          mkdir -p ../../myapp  # Ensure myapp exists at root
-          dotnet publish -c Release -o ../../myapp
-          ls -lR ../../myapp    # Debug: Verify .NET output
+          mkdir -p "$OUTPUT_DIR"
+          dotnet publish -c Release -o "$OUTPUT_DIR"
+          ls -lR "$OUTPUT_DIR"  # Debug: Verify .NET output
 
       # Set up Node.js
       - name: Use Node.js
@@ -44,8 +48,8 @@ jobs:
         working-directory: ./book.client
         run: |
           npm install
-          npm run build -- --outDir ../../myapp/wwwroot
-          ls -lR ../../myapp/wwwroot  # Debug: Verify React output
+          npm run build -- --outDir "$OUTPUT_DIR/wwwroot"
+          ls -lR "$OUTPUT_DIR/wwwroot"  # Debug: Verify React output
 
       # Debug: Verify myapp contents
       - name: Check myapp contents
