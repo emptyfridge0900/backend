@@ -23,8 +23,8 @@ jobs:
         working-directory: ./book.client
         run: |
           npm ci
-          npm run build -- --outDir ./build
-          ls -lR ./build  # Debug: Verify build output
+          npm run build
+          ls -lR ./dist  # Debug: Verify (use ./build if needed)
 
       # Deploy to Fly.io
       - uses: superfly/flyctl-actions/setup-flyctl@master
