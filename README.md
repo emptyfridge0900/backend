@@ -3,7 +3,8 @@ dotnet 9로 작성되었습니다. dotnet runtime이 [설치되어있어야합�
 
 1. 프로젝트 루트에서
 2. Book.Server로 이동 (cd Book.Server)
-3. 실행 (dotnet run)
+3. 의존성 설치 (dotnet restore)
+4. 실행 (dotnet run)
 
 자동으로 client앱도 함께 실행됩니다.
 
